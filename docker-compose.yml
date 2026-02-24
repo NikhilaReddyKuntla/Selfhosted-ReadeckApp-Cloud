@@ -1,0 +1,52 @@
+﻿version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: readeck-postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - readeck_net
+
+  readeck:
+    image: codeberg.org/readeck/readeck:latest
+    container_name: readeck-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      READECK_DATABASE_SOURCE: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+    volumes:
+      - readeck_data:/readeck
+    ports:
+      - "127.0.0.1:8000:8000"
+    networks:
+      - readeck_net
+
+volumes:
+  postgres_data:
+    name: readeck_postgres_data
+  readeck_data:
+    name: readeck_data
+
+networks:
+  readeck_net:
+    driver: bridge
+

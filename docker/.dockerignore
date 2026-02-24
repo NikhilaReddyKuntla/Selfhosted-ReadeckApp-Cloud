@@ -1,0 +1,26 @@
+﻿# Ignore VCS and metadata
+.git
+.gitignore
+
+# Local env/secrets
+.env
+.env.*
+
+# Python caches and virtual envs
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node artifacts
+node_modules/
+
+# Build outputs and temp files
+dist/
+build/
+*.log
+*.tmp
+
+# IDE files
+.idea/
+.vscode/

@@ -1,0 +1,23 @@
+﻿# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Docker and runtime artifacts
+backups/
+data/
+*.pid
+*.log
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Optional cert material if locally stored
+certs/
+
+# Temporary files
+*.tmp
+*.swp
